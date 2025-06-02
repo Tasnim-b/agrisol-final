@@ -1,0 +1,376 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Météo Agricole</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/sidebar.css' %}">
+    <style>
+        :root {
+            --primary-color: #2c7744;
+            --secondary-color: #43cea2;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 60px;
+        }
+        
+        .navbar {
+            background-color: var(--primary-color);
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .weather-container {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .weather-header {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .weather-location {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .weather-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .weather-body {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .weather-main {
+            text-align: center;
+        }
+        
+        .weather-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        
+        .weather-temp {
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .weather-desc {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .weather-card {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .weather-card i {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .weather-card .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .weather-card .value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        
+        .sun-times {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 15px;
+        }
+        
+        .sun-time {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .city-selector {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+            cursor: pointer;
+        }
+        
+        .city-selector:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .city-selector option {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .refresh-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .refresh-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .forecast-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        .forecast-title {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+        
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        
+        .forecast-card {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: var(--light-color);
+            transition: transform 0.3s;
+        }
+        
+        .forecast-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .forecast-day {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .forecast-icon {
+            width: 60px;
+            height: 60px;
+            margin: 10px auto;
+        }
+        
+        .forecast-temp {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        .weather-error {
+            text-align: center;
+            padding: 30px;
+            background-color: rgba(231, 76, 60, 0.8);
+            border-radius: 10px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'dashboard/img/logo.png' %}" alt="Logo" width="30" class="me-2">
+                Dashboard Agricole
+            </a>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}">
+                        <i class="fas fa-arrow-left me-1"></i> Retour
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {% include 'includes/sidebar.html' %}
+
+    <div class="main-content">
+        <div class="weather-container">
+            <div class="weather-header">
+                <div class="weather-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <form method="get" id="city-form" class="d-inline">
+                        <select name="ville" class="city-selector" id="city-select">
+                            {% for ville_option in villes %}
+                                <option value="{{ ville_option }}" {% if ville_option == meteo_actuel.ville %}selected{% endif %}>
+                                    {{ ville_option }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+                
+                <button class="refresh-btn" id="refresh-weather">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            
+            {% if meteo_actuel.error %}
+                <div class="weather-error">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                    <h3>Erreur de chargement</h3>
+                    <p>{{ meteo_actuel.error }}</p>
+                </div>
+            {% else %}
+                <div class="weather-body">
+                    <div class="weather-main">
+                        <img src="http://openweathermap.org/img/wn/{{ meteo_actuel.icone }}@4x.png" 
+                             alt="Icône météo" class="weather-icon">
+                        <div class="weather-temp">{{ meteo_actuel.temperature|floatformat:0 }}°C</div>
+                        <div class="weather-desc">{{ meteo_actuel.description }}</div>
+                        <div class="weather-feels">Ressenti: {{ meteo_actuel.ressenti|floatformat:0 }}°C</div>
+                    </div>
+                    
+                    <div class="weather-details">
+                        <div class="weather-card">
+                            <i class="fas fa-wind"></i>
+                            <div class="label">Vent</div>
+                            <div class="value">{{ meteo_actuel.vent }} m/s</div>
+                        </div>
+                        
+                        <div class="weather-card">
+                            <i class="fas fa-tint"></i>
+                            <div class="label">Humidité</div>
+                            <div class="value">{{ meteo_actuel.humidite }}%</div>
+                        </div>
+                        
+                        <div class="weather-card">
+                            <i class="fas fa-compress-alt"></i>
+                            <div class="label">Pression</div>
+                            <div class="value">{{ meteo_actuel.pression }} hPa</div>
+                        </div>
+                        
+                        <div class="weather-card">
+                            <i class="fas fa-info-circle"></i>
+                            <div class="label">Conditions</div>
+                            <div class="value">{{ meteo_actuel.description }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sun-times">
+                    <div class="sun-time">
+                        <i class="fas fa-sunrise"></i>
+                        <div class="label">Lever du soleil</div>
+                        <div class="value">{{ meteo_actuel.lever_soleil }}</div>
+                    </div>
+                    
+                    <div class="sun-time">
+                        <i class="fas fa-sunset"></i>
+                        <div class="label">Coucher du soleil</div>
+                        <div class="value">{{ meteo_actuel.coucher_soleil }}</div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="forecast-container">
+            <h2 class="forecast-title">Prévisions sur 5 jours</h2>
+            
+            <div class="forecast-grid">
+                {% for prev in previsions %}
+                    <div class="forecast-card">
+                        <div class="forecast-day">{{ prev.jour }}</div>
+                        <img src="http://openweathermap.org/img/wn/{{ prev.icone }}.png" 
+                             alt="Prévision météo" class="forecast-icon">
+                        <div class="forecast-temp">{{ prev.temperature|floatformat:0 }}°C</div>
+                        <div class="forecast-desc">{{ prev.description }}</div>
+                    </div>
+                {% empty %}
+                    <div class="alert alert-warning">
+                        Aucune prévision disponible pour le moment
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'dashboard/js/sidebar.js' %}"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion du changement de ville
+            document.getElementById('city-select').addEventListener('change', function() {
+                document.getElementById('city-form').submit();
+            });
+            
+            // Bouton de rafraîchissement
+            document.getElementById('refresh-weather').addEventListener('click', function() {
+                // Animation de rotation
+                this.classList.add('fa-spin');
+                
+                // Soumettre le formulaire après un court délai pour l'animation
+                setTimeout(() => {
+                    document.getElementById('city-form').submit();
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
