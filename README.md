@@ -54,11 +54,10 @@ Un fichier `flux.json` est fourni pour simplifier la mise en place du projet dan
     1. Lancer Node-RED dans votre navigateur (par défaut : [http://localhost:1880](http://localhost:1880)).
     2. Cliquer sur le menu en haut à droite (☰).
     3. Aller dans **Import** > **Clipboard**.
-    4. Ouvrir le fichier `flows.json` fourni dans ce dépôt.
-    5. Copier tout le contenu du fichier.
-    6. Coller ce contenu dans la fenêtre d'importation de Node-RED.
-    7. Cliquer sur **Import**, puis sur **Deploy** pour démarrer le flux.
-### 📄 Fichier `flux.json` à importer
+    4. Copier tout le contenu du fichier `flows.json`.
+    5. Coller ce contenu dans la fenêtre d'importation de Node-RED.
+    6. Cliquer sur **Import**, puis sur **Deploy** pour démarrer le flux.
+### 📄 Fichier `flows.json` à importer dans Node-RED
 ```bash
 [
     {
