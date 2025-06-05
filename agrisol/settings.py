@@ -153,7 +153,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'tasnim.benmabrouk@sesame.com.tn'
-EMAIL_HOST_PASSWORD = '10835235'
+EMAIL_HOST_PASSWORD = 'xenertkyuiwodftb'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CACHES = {
